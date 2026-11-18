@@ -14,7 +14,7 @@ function streak(a){var d=Math.min(dayNo(),90),n=0;if(a.indexOf(d)<0)d--;while(d>
 // Photo: an uploaded one wins, otherwise images/<slug>.jpg from your folder
 
 function photo(slug){
-    return g("mm:img:"+slug)||slug+".png"
+    return g("mm:img:"+slug)||slug+".webp"
 }
 
 function ini(f){return f.split(" ").map(function(w){return w[0]}).slice(0,2).join("")}
