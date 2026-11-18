@@ -12,7 +12,11 @@ function dayNo(){var a=new Date(2026,10,19),b=new Date();b.setHours(0,0,0,0);ret
 function load(s){try{var a=JSON.parse(g("mm:"+s));return Array.isArray(a)?a:[]}catch(e){return[]}}
 function streak(a){var d=Math.min(dayNo(),90),n=0;if(a.indexOf(d)<0)d--;while(d>0&&a.indexOf(d)>=0){n++;d--}return n}
 // Photo: an uploaded one wins, otherwise images/<slug>.jpg from your folder
-function photo(slug){return g("mm:img:"+slug)||"images/"+slug+".png"}
+
+function photo(slug){
+    return g("mm:img:"+slug)||slug+".png"
+}
+
 function ini(f){return f.split(" ").map(function(w){return w[0]}).slice(0,2).join("")}
 function star(c,s,x,y,r){return '<svg viewBox="0 0 100 100" style="width:'+s+'px;height:'+s+'px;left:'+x+';top:'+y+';transform:rotate('+r+'deg)"><use href="#s" fill="url(#g)" stroke="rgba(255,255,255,.5)" stroke-width=".5"/></svg>'}
 var app=document.getElementById("app");
