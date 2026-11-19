@@ -6,6 +6,8 @@ const firebaseConfig={apiKey:"AIzaSyCKwEVEymbMTP_Fh6e7tR7z5TsFG_CKL7g",authDomai
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const fs = getFirestore(app);
+var appEl = document.getElementById("app");
+
 // ===== 2. STORAGE: everything is saved to your account in the cloud =====
 var DB={},uid=null;
 function g(k){return DB[k]!==undefined?DB[k]:null}
@@ -30,10 +32,10 @@ function streak(a){var d=Math.min(dayNo(),90),n=0;if(a.indexOf(d)<0)d--;while(d>
 function photo(slug){return slug+".webp"}
 function ini(f){return f.split(" ").map(function(w){return w[0]}).slice(0,2).join("")}
 function star(c,s,x,y,r){return '<svg viewBox="0 0 100 100" style="width:'+s+'px;height:'+s+'px;left:'+x+';top:'+y+';transform:rotate('+r+'deg)"><use href="#s" fill="url(#g)" stroke="rgba(255,255,255,.5)" stroke-width=".5"/></svg>'}
-var appEl = document.getElementById("app");
+
 function home(){
 var d=Math.min(dayNo(),90);
-appE1.innerHTML='<section class="hero"><div><span class="badge"><i></i>'+(dayNo()<1?'Day 1 starts 19 Nov 2026':'Day '+d+' of 90 · Monk mode is on')+'</span><h1>Ninety days.<br>One discipline.</h1><p>Seven daily practices. One quiet log. Silence the noise and build the person you intend to be.</p><div class="cta"><a class="b f" href="#progress">Track progress →</a><a class="b" href="#milestones">Milestones</a><a class="b" href="#quotes">Quotes</a><a class="b" href="#" data-go="list">Disciplines</a></div></div><div class="stars">'+star(0,300,"22%","4%",0)+star(0,110,"2%","58%",12)+star(0,64,"78%","70%",-8)+'</div></section>'+
+appEl.innerHTML='<section class="hero"><div><span class="badge"><i></i>'+(dayNo()<1?'Day 1 starts 19 Nov 2026':'Day '+d+' of 90 · Monk mode is on')+'</span><h1>Ninety days.<br>One discipline.</h1><p>Seven daily practices. One quiet log. Silence the noise and build the person you intend to be.</p><div class="cta"><a class="b f" href="#progress">Track progress →</a><a class="b" href="#milestones">Milestones</a><a class="b" href="#quotes">Quotes</a><a class="b" href="#" data-go="list">Disciplines</a></div></div><div class="stars">'+star(0,300,"22%","4%",0)+star(0,110,"2%","58%",12)+star(0,64,"78%","70%",-8)+'</div></section>'+
 '<div class="strip">'+P.map(function(p){return '<a href="#'+p.s+'">'+p.t+'</a>'}).join("")+'</div>'+
 '<div class="sec" id="list"><h2>The seven disciplines</h2><span>Tap to open</span></div><div class="cards">'+P.map(function(p,i){return '<a class="card" href="#'+p.s+'"><div class="top"><span>0'+(i+1)+'</span><span class="av" style="position:relative;overflow:hidden">'+ini(p.f)+'</span></div><h3>'+p.t+'</h3><small>'+p.f+' · '+load(p.s).length+' / 90 days</small></a>'}).join("")+'</div>'}
 function page(k){
@@ -42,14 +44,14 @@ var i=P.findIndex(function(p){return p.s===k}),p=P[i];if(!p)return home();
 var a=load(k),dn=dayNo(),im=photo(k),cells="";
 for(var n=1;n<=90;n++)cells+='<button data-n="'+n+'"'+(n===dn?'':' disabled')+' class="'+(a.indexOf(n)>=0?"on ":"")+(n===dn?"today":"")+'">'+n+'</button>';
 var pr=P[(i+6)%7],nx=P[(i+1)%7];
-appE1.innerHTML='<div class="ph"><a class="back" href="#">← All disciplines</a><div style="margin-top:28px"><span class="badge">0'+(i+1)+' / 07</span></div><h1>'+p.t+'</h1><p>'+p.d+'</p></div>'+
+appEl.innerHTML='<div class="ph"><a class="back" href="#">← All disciplines</a><div style="margin-top:28px"><span class="badge">0'+(i+1)+' / 07</span></div><h1>'+p.t+'</h1><p>'+p.d+'</p></div>'+
 '<div class="stage"><div class="big">'+p.f.split(' ').pop()+'</div><div class="pic">'+('<svg viewBox="0 0 200 260" style="position:absolute;inset:0;width:100%;height:100%"><circle cx="100" cy="85" r="42" fill="#262626"/><path d="M20 260c0-70 35-100 80-100s80 30 80 100z" fill="#262626"/></svg><img src="'+im+'" alt="'+p.f+'" width="470" height="590" fetchpriority="high" decoding="async" style="position:absolute;inset:0" onerror="this.remove()">')+'</div><span class="l">0'+(i+1)+' / 07 · '+p.t+'</span><span class="r">'+p.f+'</span></div><div class="fig"><q>“'+p.q+'”</q><cite>— '+p.f+'</cite></div>'+
 '<div class="stats"><div><b id="c1">'+a.length+'</b><small>Days done</small></div><div><b id="c2">'+streak(a)+'</b><small>Current streak</small></div><div><b>'+Math.max(0,Math.min(dn,90))+'</b><small>Current day · of 90</small></div></div>'+
 '<div class="sec"><h2>90-day log</h2><span>'+(dn<1?'Locked until 19 Nov':dn>90?'Challenge complete':'Only today (day '+dn+') can be changed')+'</span></div><div class="grid">'+cells+'</div>'+
 '<div class="sec"><h2>Today’s note</h2></div><textarea id="nt" placeholder="What did you do? What did you learn?"></textarea>'+
 '<div class="pn"><a class="b" href="#'+pr.s+'">← '+pr.t+'</a><a class="b f" href="#'+nx.s+'">'+nx.t+' →</a></div>';
 var nt=document.getElementById("nt"),key="mm:note:"+k+":"+dn;nt.value=g(key)||"";nt.disabled=dn<1||dn>90;nt.oninput=function(){st(key,nt.value)};
-appE1.querySelector(".grid").onclick=function(e){var b=e.target.closest("button");if(!b||b.disabled)return;var n=+b.dataset.n,x;if(n!==dayNo())return;x=a.indexOf(n);if(x>=0)a.splice(x,1);else a.push(n);st("mm:"+k,JSON.stringify(a));b.classList.toggle("on");document.getElementById("c1").textContent=a.length;document.getElementById("c2").textContent=streak(a)}}
+appEl.querySelector(".grid").onclick=function(e){var b=e.target.closest("button");if(!b||b.disabled)return;var n=+b.dataset.n,x;if(n!==dayNo())return;x=a.indexOf(n);if(x>=0)a.splice(x,1);else a.push(n);st("mm:"+k,JSON.stringify(a));b.classList.toggle("on");document.getElementById("c1").textContent=a.length;document.getElementById("c2").textContent=streak(a)}}
 var Q=[
 "The impediment to action advances action. What stands in the way becomes the way.|Marcus Aurelius",
 "Waste no more time arguing about what a good man should be. Be one.|Marcus Aurelius",
@@ -156,13 +158,13 @@ function prog(){
 var dn=dayNo(),el=Math.max(0,Math.min(dn,90)),D=P.map(function(p){return load(p.s)}),per=[];
 for(var n=1;n<=90;n++){var c=0;D.forEach(function(a){if(a.indexOf(n)>=0)c++});per.push(c)}
 var tot=D.reduce(function(s,a){return s+a.length},0),perfect=per.filter(function(c){return c===7}).length,pct=el?Math.round(tot/(el*7)*100):0,best=Math.max.apply(null,D.map(function(a){return streak(a)}));
-appE1.innerHTML='<div class="ph"><a class="back" href="#">← Home</a><div style="margin-top:28px"><span class="badge">Overview</span></div><h1>Progress</h1><p>Every discipline, every day, in one place.</p></div>'+
+appEl.innerHTML='<div class="ph"><a class="back" href="#">← Home</a><div style="margin-top:28px"><span class="badge">Overview</span></div><h1>Progress</h1><p>Every discipline, every day, in one place.</p></div>'+
 '<div class="stats"><div><b>'+tot+'</b><small>Check-ins · of 630</small></div><div><b>'+pct+'%</b><small>Completion so far</small></div><div><b>'+perfect+'</b><small>Perfect days</small></div><div><b>'+best+'</b><small>Best current streak</small></div></div>'+
 '<div class="sec"><h2>Daily completion</h2><span>Disciplines done per day</span></div><div class="bars">'+per.map(function(c,i){return '<span class="'+(c?'':'z ')+(i+1===dn?'t':'')+'" title="Day '+(i+1)+': '+c+'/7" style="height:'+Math.max(2,c/7*100)+'%"></span>'}).join("")+'</div>'+
 '<div class="sec"><h2>By discipline</h2><span>Each square is a day</span></div>'+P.map(function(p,j){var a=D[j],h="";for(var n=1;n<=90;n++)h+='<i class="'+(a.indexOf(n)>=0?"on":"")+(n===dn?" t":"")+'"></i>';return '<a class="hr" href="#'+p.s+'"><div><span>'+p.t+'</span><small>'+a.length+' / 90</small></div><div class="heat">'+h+'</div></a>'}).join("")+
 '<div class="pn"><a class="b" href="#">← Home</a><a class="b f" href="#quotes">Quotes →</a></div>'}
 function quotes(){
-appE1.innerHTML='<div class="ph"><a class="back" href="#">← Home</a><div style="margin-top:28px"><span class="badge">100 quotes</span></div><h1>Quotes</h1><p>One hundred lines to read when motivation runs low.</p></div><div class="ql">'+Q.map(function(x,i){var t=x.split("|");return '<div class="qi"><span class="qn">'+String(i+1).padStart(3,"0")+'</span><div><q>“'+t[0]+'”</q><cite>— '+t[1]+'</cite></div></div>'}).join("")+'</div><div class="pn"><a class="b" href="#">← Home</a><a class="b f" href="#progress">Progress →</a></div>'}
+appEl.innerHTML='<div class="ph"><a class="back" href="#">← Home</a><div style="margin-top:28px"><span class="badge">100 quotes</span></div><h1>Quotes</h1><p>One hundred lines to read when motivation runs low.</p></div><div class="ql">'+Q.map(function(x,i){var t=x.split("|");return '<div class="qi"><span class="qn">'+String(i+1).padStart(3,"0")+'</span><div><q>“'+t[0]+'”</q><cite>— '+t[1]+'</cite></div></div>'}).join("")+'</div><div class="pn"><a class="b" href="#">← Home</a><a class="b f" href="#progress">Progress →</a></div>'}
 var M=[
 ["The Reset",1,7,"Eliminate distractions and establish control.",["Remove distracting apps and notifications.","Set up workout and sleep routines.","Create a personal expense tracker.","Set up design practice workspace.","Complete 7 days of daily tracking.","Read first 50 pages of a book."],"Foundation established"],
 ["Build Consistency",8,15,"Prove that you can follow a routine.",["Complete 10 workouts cumulatively.","Complete 15 hours of design practice.","Recreate 5 professional designs.","Complete 10 meditation sessions.","Finish first 100 pages of a book.","Complete 15 days of expense tracking."],"Consistency established"],
@@ -186,12 +188,12 @@ return '<section class="ms '+sx+'"><div class="mh"><span>'+pad(i+1)+'</span><spa
 '<div class="tl">'+m[4].map(function(t,j){var k=i+"-"+j;return '<label class="tk"><input type="checkbox" data-k="'+k+'"'+(S[k]?' checked':'')+(sx==="locked"?' disabled':'')+'><span class="bx"></span><span>'+t+'</span></label>'}).join("")+'</div>'+
 '<div class="mf"><span>'+d+' / '+n+' tasks</span><span>'+(full?'✓ '+m[5]:Math.round(d/n*100)+'%')+'</span></div><div class="pbar"><i style="width:'+d/n*100+'%"></i></div></section>'}).join("");
 var pct=Math.round(td/tt*100);
-appE1.innerHTML='<div class="ph"><a class="back" href="#">← Home</a><div style="margin-top:28px"><span class="badge">Your journey</span></div><h1>Milestones</h1><p>Complete milestones to progress through the campaign.</p></div>'+
+appEl.innerHTML='<div class="ph"><a class="back" href="#">← Home</a><div style="margin-top:28px"><span class="badge">Your journey</span></div><h1>Milestones</h1><p>Complete milestones to progress through the campaign.</p></div>'+
 '<div class="ov"><div><small>Overall progress</small><b>'+pct+'%</b></div><div><small>Milestones done</small><b>'+done+' / 8</b></div><div><small>Day</small><b>'+pad(Math.max(0,Math.min(dn,90)))+' / 90</b></div></div><div class="pbar"><i style="width:'+pct+'%"></i></div>'+
 '<div class="sec"><h2>Timeline</h2><span>Locked milestones open on their start day</span></div><div class="mlist">'+cards+'</div>'+
 '<div class="sec"><h2>Target categories</h2><span>What 90 days adds up to</span></div><div class="cards cats">'+C.map(function(c){return '<div class="card"><div class="top"><span>'+c[0]+'</span></div><h3>'+c[1]+'</h3><small>'+c[2]+'</small></div>'}).join("")+'</div>'+
 '<p class="note">Daily habits generate progress. Milestones are the achievements you earn from it.</p><div class="pn"><a class="b" href="#">← Home</a><a class="b f" href="#progress">Progress →</a></div>';
-appE1.querySelector(".mlist").onchange=function(e){var k=e.target.dataset.k;if(!k)return;var X=msGet();if(X[k])delete X[k];else X[k]=1;st("mm:ms",JSON.stringify(X));ms()}}
+appEl.querySelector(".mlist").onchange=function(e){var k=e.target.dataset.k;if(!k)return;var X=msGet();if(X[k])delete X[k];else X[k]=1;st("mm:ms",JSON.stringify(X));ms()}}
 function route(keep){if(!uid)return;var h=location.hash.slice(1);var q=dayNo();document.getElementById("dn").textContent=q<1?"Starts 19 Nov":"Day "+Math.min(q,90)+" / 90";if(keep!==true)window.scrollTo(0,0);h?page(h):home()}
 document.addEventListener("click",function(e){var a=e.target.closest("[data-go]");if(!a)return;e.preventDefault();if(location.hash&&location.hash!=="#"){location.hash="";setTimeout(function(){var l=document.getElementById("list");l&&l.scrollIntoView()},50)}else{var l=document.getElementById("list");l&&l.scrollIntoView()}});
 window.addEventListener("hashchange",route);route();
@@ -200,7 +202,7 @@ document.getElementById("th").onclick=function(){var r=document.documentElement;
 // ===== 3. LOGIN =====
 function login(){
 document.getElementById("so").hidden=true;
-appE1.innerHTML='<div class="ph"><span class="badge">Private</span><h1>Sign in</h1><p>Your progress is saved to your account, so it follows you to any phone or laptop.</p></div><form id="lf" class="lf"><input id="em" type="email" placeholder="Email" autocomplete="username" required><input id="pw" type="password" placeholder="Password (min 6 characters)" autocomplete="current-password" required><div class="cta"><button class="b f" type="submit">Sign in</button><button class="b" type="button" id="cr">Create account</button></div><p id="er" class="note"></p></form>';
+appEl.innerHTML='<div class="ph"><span class="badge">Private</span><h1>Sign in</h1><p>Your progress is saved to your account, so it follows you to any phone or laptop.</p></div><form id="lf" class="lf"><input id="em" type="email" placeholder="Email" autocomplete="username" required><input id="pw" type="password" placeholder="Password (min 6 characters)" autocomplete="current-password" required><div class="cta"><button class="b f" type="submit">Sign in</button><button class="b" type="button" id="cr">Create account</button></div><p id="er" class="note"></p></form>';
 var f=document.getElementById("lf"),er=document.getElementById("er");
 function run(fn){er.textContent="";fn(auth,f.em.value,f.pw.value).catch(function(e){er.textContent=({"auth/invalid-credential":"Wrong email or password.","auth/email-already-in-use":"Account exists. Use Sign in.","auth/weak-password":"Password needs 6+ characters.","auth/invalid-email":"Check the email address."})[e.code]||e.code})}
 f.onsubmit=function(e){e.preventDefault();run(signInWithEmailAndPassword)};
