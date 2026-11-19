@@ -142,3 +142,9 @@ h1{font-size:clamp(38px,12.5vw,60px);letter-spacing:-.04em}
 .cats .card h3{margin:22px 0 4px;font-size:44px}
 .note{color:var(--mut);font-size:14px;margin-top:28px}
 @media(max-width:560px){.ms{padding:18px;border-radius:18px}.ov b{font-size:30px}.ov div{min-width:calc(50% - 7px)}}
+
+[hidden]{display:none!important}
+.lf{display:grid;gap:12px;max-width:420px}
+.lf input{padding:14px 16px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--fg);font:inherit}
+.ld{padding:30vh 0;text-align:center;color:var(--mut);font-size:13px;letter-spacing:.2em;text-transform:uppercase;animation:pl 1.2s ease-in-out infinite}
+@keyframes pl{50%{opacity:.35}}

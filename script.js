@@ -1,3 +1,20 @@
+// ===== 1. FIREBASE SETUP: paste your own values from the Firebase console =====
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import{getAuth,onAuthStateChanged,signInWithEmailAndPassword,createUserWithEmailAndPassword,signOut}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import{getFirestore,doc,getDoc,setDoc}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const firebaseConfig={apiKey:"AIzaSyCKwEVEymbMTP_Fh6e7tR7z5TsFG_CKL7g",authDomain:"monkmode-45f89.firebaseapp.com",projectId:"monkmode-45f89",appId:"1:790179535261:web:de2fd2e031804f5705b774"};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const fs = getFirestore(app);
+// ===== 2. STORAGE: everything is saved to your account in the cloud =====
+var DB={},uid=null;
+function g(k){return DB[k]!==undefined?DB[k]:null}
+function st(k,v){DB[k]=v;try{localStorage.setItem("u:"+uid+":"+k,v)}catch(e){}if(uid)setDoc(doc(fs,"users",uid),{[k]:v},{merge:true}).catch(function(){})}
+function same(a,b){var k=Object.keys(a);return k.length===Object.keys(b).length&&k.every(function(x){return a[x]===b[x]})}
+function busy(){var a=document.activeElement;return !!(a&&a.tagName==="TEXTAREA")}
+function saveMirror(o){try{for(var k in o)localStorage.setItem("u:"+uid+":"+k,o[k])}catch(e){}}
+function mirror(){var o={},p="u:"+uid+":";try{for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k.indexOf(p)===0)o[k.slice(p.length)]=localStorage.getItem(k)}}catch(e){}return o}
+
 var P=[
 {s:"meditation",t:"Meditation",d:"Sit. Breathe. Watch the mind without obeying it.",f:"Marcus Aurelius",q:"You have power over your mind, not outside events. Realize this, and you will find strength."},
 {s:"exercise",t:"Exercise",d:"Train the body. Earn the calm.",f:"David Goggins",q:"Who’s gonna carry the boats?"},
@@ -6,8 +23,6 @@ var P=[
 {s:"english",t:"English",d:"Words are tools. Sharpen them daily.",f:"Nelson Mandela",q:"If you talk to a man in a language he understands, that goes to his head. If you talk to him in his language, that goes to his heart."},
 {s:"calligraphy",t:"Calligraphy",d:"Slow strokes. Steady hand. Patient mind.",f:"Denzel Washington",q:"Ease is a greater threat to progress than hardship."},
 {s:"finance",t:"Personal Finance",d:"Spend less than you earn. Invest the difference.",f:"Warren Buffett",q:"Do not save what is left after spending; instead spend what is left after saving."}];
-function g(k){try{return localStorage.getItem(k)}catch(e){return null}}
-function st(k,v){try{localStorage.setItem(k,v)}catch(e){}}
 function dayNo(){var a=new Date(2026,10,19),b=new Date();b.setHours(0,0,0,0);return Math.round((b-a)/864e5)+1}
 function load(s){try{var a=JSON.parse(g("mm:"+s));return Array.isArray(a)?a:[]}catch(e){return[]}}
 function streak(a){var d=Math.min(dayNo(),90),n=0;if(a.indexOf(d)<0)d--;while(d>0&&a.indexOf(d)>=0){n++;d--}return n}
@@ -177,7 +192,29 @@ app.innerHTML='<div class="ph"><a class="back" href="#">← Home</a><div style="
 '<div class="sec"><h2>Target categories</h2><span>What 90 days adds up to</span></div><div class="cards cats">'+C.map(function(c){return '<div class="card"><div class="top"><span>'+c[0]+'</span></div><h3>'+c[1]+'</h3><small>'+c[2]+'</small></div>'}).join("")+'</div>'+
 '<p class="note">Daily habits generate progress. Milestones are the achievements you earn from it.</p><div class="pn"><a class="b" href="#">← Home</a><a class="b f" href="#progress">Progress →</a></div>';
 app.querySelector(".mlist").onchange=function(e){var k=e.target.dataset.k;if(!k)return;var X=msGet();if(X[k])delete X[k];else X[k]=1;st("mm:ms",JSON.stringify(X));ms()}}
-function route(){var h=location.hash.slice(1);var q=dayNo();document.getElementById("dn").textContent=q<1?"Starts 19 Nov":"Day "+Math.min(q,90)+" / 90";window.scrollTo(0,0);h?page(h):home()}
+function route(keep){if(!uid)return;var h=location.hash.slice(1);var q=dayNo();document.getElementById("dn").textContent=q<1?"Starts 19 Nov":"Day "+Math.min(q,90)+" / 90";if(keep!==true)window.scrollTo(0,0);h?page(h):home()}
 document.addEventListener("click",function(e){var a=e.target.closest("[data-go]");if(!a)return;e.preventDefault();if(location.hash&&location.hash!=="#"){location.hash="";setTimeout(function(){var l=document.getElementById("list");l&&l.scrollIntoView()},50)}else{var l=document.getElementById("list");l&&l.scrollIntoView()}});
 window.addEventListener("hashchange",route);route();
 document.getElementById("th").onclick=function(){var r=document.documentElement;r.dataset.theme=r.dataset.theme==="light"?"dark":"light"};
+
+// ===== 3. LOGIN =====
+function login(){
+document.getElementById("so").hidden=true;
+app.innerHTML='<div class="ph"><span class="badge">Private</span><h1>Sign in</h1><p>Your progress is saved to your account, so it follows you to any phone or laptop.</p></div><form id="lf" class="lf"><input id="em" type="email" placeholder="Email" autocomplete="username" required><input id="pw" type="password" placeholder="Password (min 6 characters)" autocomplete="current-password" required><div class="cta"><button class="b f" type="submit">Sign in</button><button class="b" type="button" id="cr">Create account</button></div><p id="er" class="note"></p></form>';
+var f=document.getElementById("lf"),er=document.getElementById("er");
+function run(fn){er.textContent="";fn(auth,f.em.value,f.pw.value).catch(function(e){er.textContent=({"auth/invalid-credential":"Wrong email or password.","auth/email-already-in-use":"Account exists. Use Sign in.","auth/weak-password":"Password needs 6+ characters.","auth/invalid-email":"Check the email address."})[e.code]||e.code})}
+f.onsubmit=function(e){e.preventDefault();run(signInWithEmailAndPassword)};
+document.getElementById("cr").onclick=function(){run(createUserWithEmailAndPassword)}}
+document.getElementById("so").onclick=function(){try{var p="u:"+uid+":",d=[];for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k.indexOf(p)===0)d.push(k)}d.forEach(function(k){localStorage.removeItem(k)})}catch(e){}signOut(auth)};
+onAuthStateChanged(auth,async function(u){
+if(!u){uid=null;DB={};return login()}
+uid=u.uid;document.getElementById("so").hidden=false;
+var m0=mirror(),had=Object.keys(m0).length>0;
+if(had){DB=m0;route()}
+try{var s=await getDoc(doc(fs,"users",uid)),cloud=s.exists()?s.data():null;
+if(!cloud){var m={};for(var i=0;i<localStorage.length;i++){var k=localStorage.key(i);if(k.indexOf("mm:")===0)m[k]=localStorage.getItem(k)}if(Object.keys(m).length){cloud=m;await setDoc(doc(fs,"users",uid),m)}}
+if(cloud&&!same(cloud,DB)){DB=cloud;saveMirror(DB);if(!busy())route(true)}else if(!had)route()}
+catch(e){if(!had){DB={};route()}}});
+document.addEventListener("visibilitychange",async function(){
+if(document.visibilityState!=="visible"||!uid||busy())return;
+try{var s=await getDoc(doc(fs,"users",uid));if(s.exists()&&!same(s.data(),DB)){DB=s.data();saveMirror(DB);route(true)}}catch(e){}});
