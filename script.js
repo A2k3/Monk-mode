@@ -49,7 +49,7 @@ appE1.innerHTML='<div class="ph"><a class="back" href="#">← All disciplines</a
 '<div class="sec"><h2>Today’s note</h2></div><textarea id="nt" placeholder="What did you do? What did you learn?"></textarea>'+
 '<div class="pn"><a class="b" href="#'+pr.s+'">← '+pr.t+'</a><a class="b f" href="#'+nx.s+'">'+nx.t+' →</a></div>';
 var nt=document.getElementById("nt"),key="mm:note:"+k+":"+dn;nt.value=g(key)||"";nt.disabled=dn<1||dn>90;nt.oninput=function(){st(key,nt.value)};
-app.querySelector(".grid").onclick=function(e){var b=e.target.closest("button");if(!b||b.disabled)return;var n=+b.dataset.n,x;if(n!==dayNo())return;x=a.indexOf(n);if(x>=0)a.splice(x,1);else a.push(n);st("mm:"+k,JSON.stringify(a));b.classList.toggle("on");document.getElementById("c1").textContent=a.length;document.getElementById("c2").textContent=streak(a)}}
+appE1.querySelector(".grid").onclick=function(e){var b=e.target.closest("button");if(!b||b.disabled)return;var n=+b.dataset.n,x;if(n!==dayNo())return;x=a.indexOf(n);if(x>=0)a.splice(x,1);else a.push(n);st("mm:"+k,JSON.stringify(a));b.classList.toggle("on");document.getElementById("c1").textContent=a.length;document.getElementById("c2").textContent=streak(a)}}
 var Q=[
 "The impediment to action advances action. What stands in the way becomes the way.|Marcus Aurelius",
 "Waste no more time arguing about what a good man should be. Be one.|Marcus Aurelius",
@@ -191,7 +191,7 @@ appE1.innerHTML='<div class="ph"><a class="back" href="#">← Home</a><div style
 '<div class="sec"><h2>Timeline</h2><span>Locked milestones open on their start day</span></div><div class="mlist">'+cards+'</div>'+
 '<div class="sec"><h2>Target categories</h2><span>What 90 days adds up to</span></div><div class="cards cats">'+C.map(function(c){return '<div class="card"><div class="top"><span>'+c[0]+'</span></div><h3>'+c[1]+'</h3><small>'+c[2]+'</small></div>'}).join("")+'</div>'+
 '<p class="note">Daily habits generate progress. Milestones are the achievements you earn from it.</p><div class="pn"><a class="b" href="#">← Home</a><a class="b f" href="#progress">Progress →</a></div>';
-app.querySelector(".mlist").onchange=function(e){var k=e.target.dataset.k;if(!k)return;var X=msGet();if(X[k])delete X[k];else X[k]=1;st("mm:ms",JSON.stringify(X));ms()}}
+appE1.querySelector(".mlist").onchange=function(e){var k=e.target.dataset.k;if(!k)return;var X=msGet();if(X[k])delete X[k];else X[k]=1;st("mm:ms",JSON.stringify(X));ms()}}
 function route(keep){if(!uid)return;var h=location.hash.slice(1);var q=dayNo();document.getElementById("dn").textContent=q<1?"Starts 19 Nov":"Day "+Math.min(q,90)+" / 90";if(keep!==true)window.scrollTo(0,0);h?page(h):home()}
 document.addEventListener("click",function(e){var a=e.target.closest("[data-go]");if(!a)return;e.preventDefault();if(location.hash&&location.hash!=="#"){location.hash="";setTimeout(function(){var l=document.getElementById("list");l&&l.scrollIntoView()},50)}else{var l=document.getElementById("list");l&&l.scrollIntoView()}});
 window.addEventListener("hashchange",route);route();
