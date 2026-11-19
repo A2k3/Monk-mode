@@ -113,3 +113,32 @@ h1{font-size:clamp(38px,12.5vw,60px);letter-spacing:-.04em}
 .pn .b{flex:1;justify-content:center}
 }
 @media(max-width:360px){.cards{grid-template-columns:1fr}}
+
+.ov{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.ov div{flex:1;min-width:140px;padding:18px 20px;border:1px solid var(--line);border-radius:20px;background:var(--card)}
+.ov b{display:block;font-size:40px;letter-spacing:-.04em;font-weight:600}
+.ov small,.cats small{color:var(--mut);font-size:13px}
+.pbar{height:4px;background:var(--line);border-radius:4px;overflow:hidden}
+.pbar i{display:block;height:100%;background:var(--fg);border-radius:4px;transition:width .3s}
+.mlist{display:grid;gap:14px}
+.ms{padding:26px;border:1px solid var(--line);border-radius:24px;background:var(--card)}
+.ms.current{border-color:var(--fg)}
+.ms.locked{opacity:.5}
+.mh{display:flex;justify-content:space-between;align-items:center;font-size:13px;color:var(--mut)}
+.tag{padding:4px 12px;border:1px solid var(--line);border-radius:99px;font-size:12px}
+.ms.current .tag{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.ms h3{font-size:clamp(26px,4vw,36px);letter-spacing:-.04em;font-weight:600;margin:22px 0 4px}
+.ms>small{display:block;color:var(--mut);font-size:14px}
+.lk{margin:14px 0 0;font-size:13px;color:var(--mut)}
+.tl{margin:20px 0 18px;border-top:1px solid var(--line)}
+.tk{position:relative;display:flex;gap:14px;align-items:flex-start;padding:13px 2px;border-bottom:1px solid var(--line);font-size:15px;cursor:pointer}
+.ms.locked .tk{cursor:not-allowed}
+.tk input{position:absolute;opacity:0;pointer-events:none}
+.bx{flex:none;width:20px;height:20px;border:1px solid var(--mut);border-radius:6px;margin-top:2px;display:grid;place-items:center}
+.tk input:checked+.bx{background:var(--fg);border-color:var(--fg)}
+.tk input:checked+.bx:after{content:"";width:5px;height:9px;border:solid var(--bg);border-width:0 2px 2px 0;transform:rotate(45deg) translate(-1px,-1px)}
+.tk input:checked~span:last-child{color:var(--mut);text-decoration:line-through}
+.mf{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--mut);margin-bottom:10px}
+.cats .card h3{margin:22px 0 4px;font-size:44px}
+.note{color:var(--mut);font-size:14px;margin-top:28px}
+@media(max-width:560px){.ms{padding:18px;border-radius:18px}.ov b{font-size:30px}.ov div{min-width:calc(50% - 7px)}}

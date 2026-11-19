@@ -18,11 +18,11 @@ function star(c,s,x,y,r){return '<svg viewBox="0 0 100 100" style="width:'+s+'px
 var app=document.getElementById("app");
 function home(){
 var d=Math.min(dayNo(),90);
-app.innerHTML='<section class="hero"><div><span class="badge"><i></i>'+(dayNo()<1?'Day 1 starts 19 Nov 2026':'Day '+d+' of 90 · Monk mode is on')+'</span><h1>Ninety days.<br>One discipline.</h1><p>Seven daily practices. One quiet log. Silence the noise and build the person you intend to be.</p><div class="cta"><a class="b f" href="#progress">Track progress →</a><a class="b" href="#quotes">Quotes</a><a class="b" href="#" data-go="list">Disciplines</a></div></div><div class="stars">'+star(0,300,"22%","4%",0)+star(0,110,"2%","58%",12)+star(0,64,"78%","70%",-8)+'</div></section>'+
+app.innerHTML='<section class="hero"><div><span class="badge"><i></i>'+(dayNo()<1?'Day 1 starts 19 Nov 2026':'Day '+d+' of 90 · Monk mode is on')+'</span><h1>Ninety days.<br>One discipline.</h1><p>Seven daily practices. One quiet log. Silence the noise and build the person you intend to be.</p><div class="cta"><a class="b f" href="#progress">Track progress →</a><a class="b" href="#milestones">Milestones</a><a class="b" href="#quotes">Quotes</a><a class="b" href="#" data-go="list">Disciplines</a></div></div><div class="stars">'+star(0,300,"22%","4%",0)+star(0,110,"2%","58%",12)+star(0,64,"78%","70%",-8)+'</div></section>'+
 '<div class="strip">'+P.map(function(p){return '<a href="#'+p.s+'">'+p.t+'</a>'}).join("")+'</div>'+
 '<div class="sec" id="list"><h2>The seven disciplines</h2><span>Tap to open</span></div><div class="cards">'+P.map(function(p,i){return '<a class="card" href="#'+p.s+'"><div class="top"><span>0'+(i+1)+'</span><span class="av" style="position:relative;overflow:hidden">'+ini(p.f)+'</span></div><h3>'+p.t+'</h3><small>'+p.f+' · '+load(p.s).length+' / 90 days</small></a>'}).join("")+'</div>'}
 function page(k){
-if(k==="progress")return prog();if(k==="quotes")return quotes();
+if(k==="milestones")return ms();if(k==="progress")return prog();if(k==="quotes")return quotes();
 var i=P.findIndex(function(p){return p.s===k}),p=P[i];if(!p)return home();
 var a=load(k),dn=dayNo(),im=photo(k),cells="";
 for(var n=1;n<=90;n++)cells+='<button data-n="'+n+'"'+(n===dn?'':' disabled')+' class="'+(a.indexOf(n)>=0?"on ":"")+(n===dn?"today":"")+'">'+n+'</button>';
@@ -148,6 +148,35 @@ app.innerHTML='<div class="ph"><a class="back" href="#">← Home</a><div style="
 '<div class="pn"><a class="b" href="#">← Home</a><a class="b f" href="#quotes">Quotes →</a></div>'}
 function quotes(){
 app.innerHTML='<div class="ph"><a class="back" href="#">← Home</a><div style="margin-top:28px"><span class="badge">100 quotes</span></div><h1>Quotes</h1><p>One hundred lines to read when motivation runs low.</p></div><div class="ql">'+Q.map(function(x,i){var t=x.split("|");return '<div class="qi"><span class="qn">'+String(i+1).padStart(3,"0")+'</span><div><q>“'+t[0]+'”</q><cite>— '+t[1]+'</cite></div></div>'}).join("")+'</div><div class="pn"><a class="b" href="#">← Home</a><a class="b f" href="#progress">Progress →</a></div>'}
+var M=[
+["The Reset",1,7,"Eliminate distractions and establish control.",["Remove distracting apps and notifications.","Set up workout and sleep routines.","Create a personal expense tracker.","Set up design practice workspace.","Complete 7 days of daily tracking.","Read first 50 pages of a book."],"Foundation established"],
+["Build Consistency",8,15,"Prove that you can follow a routine.",["Complete 10 workouts cumulatively.","Complete 15 hours of design practice.","Recreate 5 professional designs.","Complete 10 meditation sessions.","Finish first 100 pages of a book.","Complete 15 days of expense tracking."],"Consistency established"],
+["The First Transformation",16,30,"Produce your first tangible results.",["Complete 20 workouts cumulatively.","Create 10 original posters.","Complete 1 branding project.","Create 2 motion graphics exercises.","Finish first book.","Complete 30 days of expense tracking.","Take Day 30 progress photos."],"First transformation"],
+["Skill Development",31,45,"Move from learning to professional execution.",["Complete 30 workouts cumulatively.","Create 15 original posters cumulatively.","Complete second branding project.","Complete 5 motion graphics exercises.","Design 1 packaging project.","Complete 15 English-speaking practice sessions.","Publish 3 portfolio projects."],"Skill builder"],
+["The Execution Phase",46,60,"Start producing work for the real world.",["Complete 40 workouts cumulatively.","Create 20 original posters.","Complete third branding project.","Complete 5 premium product animations.","Create 2 AI advertising videos.","Send first 20 freelance proposals.","Finish second book.","Take Day 60 progress photos."],"Execution mode"],
+["Professional Development",61,75,"Turn your skills into opportunities.",["Complete 50 workouts cumulatively.","Finish 30 posters.","Complete 10 motion exercises.","Complete 5 AI advertising videos.","Publish your professional portfolio.","Reach 40 freelance proposals.","Contact 20 potential clients.","Finish third book."],"Professional readiness"],
+["Final Push",76,89,"Finish incomplete projects and create opportunities.",["Complete 60 strength workouts.","Complete 20 cardio sessions.","Send 50 freelance proposals.","Contact 30 potential clients.","Complete 1 paid freelance project, if secured.","Finish portfolio presentation.","Review financial progress."],"Final assessment"],
+["The New Standard",90,90,"Evaluate your transformation.",["Take final progress photos.","Compare Day 1, 30, 60 and 90 fitness results.","Review all design projects.","Review financial records.","Evaluate your habits and screen time.","Write a 90-day reflection.","Create your next 90-day plan."],"90-day completion"]];
+var C=[["Fitness","60","Strength workouts"],["Graphic design","30","Original posters"],["Motion & AI","15","Creative exercises and videos"],["Finance","90","Days of expense tracking"],["Knowledge","3","Books completed"],["Discipline","90","Days of challenge tracking"]];
+function pad(n){return String(n).padStart(2,"0")}
+function msGet(){try{return JSON.parse(g("mm:ms"))||{}}catch(e){return{}}}
+function ms(){
+var dn=dayNo(),S=msGet(),done=0,tt=0,td=0;
+var cards=M.map(function(m,i){
+var n=m[4].length,d=m[4].filter(function(t,j){return S[i+"-"+j]}).length,full=d===n,sx=dn<m[1]?"locked":(dn<=m[2]?"current":"past");
+tt+=n;td+=d;if(full)done++;
+var dt=new Date(2026,10,19+m[1]-1).toLocaleDateString("en-GB",{day:"numeric",month:"short"});
+var tag=full?"Completed":sx==="locked"?"Locked":sx==="current"?"Current":"Open";
+return '<section class="ms '+sx+'"><div class="mh"><span>'+pad(i+1)+'</span><span class="tag">'+tag+'</span></div><h3>'+m[0]+'</h3><small>Day '+pad(m[1])+(m[2]>m[1]?'–'+pad(m[2]):'')+' · '+m[3]+'</small>'+(sx==="locked"?'<p class="lk">Unlocks on Day '+m[1]+' · '+dt+'</p>':'')+
+'<div class="tl">'+m[4].map(function(t,j){var k=i+"-"+j;return '<label class="tk"><input type="checkbox" data-k="'+k+'"'+(S[k]?' checked':'')+(sx==="locked"?' disabled':'')+'><span class="bx"></span><span>'+t+'</span></label>'}).join("")+'</div>'+
+'<div class="mf"><span>'+d+' / '+n+' tasks</span><span>'+(full?'✓ '+m[5]:Math.round(d/n*100)+'%')+'</span></div><div class="pbar"><i style="width:'+d/n*100+'%"></i></div></section>'}).join("");
+var pct=Math.round(td/tt*100);
+app.innerHTML='<div class="ph"><a class="back" href="#">← Home</a><div style="margin-top:28px"><span class="badge">Your journey</span></div><h1>Milestones</h1><p>Complete milestones to progress through the campaign.</p></div>'+
+'<div class="ov"><div><small>Overall progress</small><b>'+pct+'%</b></div><div><small>Milestones done</small><b>'+done+' / 8</b></div><div><small>Day</small><b>'+pad(Math.max(0,Math.min(dn,90)))+' / 90</b></div></div><div class="pbar"><i style="width:'+pct+'%"></i></div>'+
+'<div class="sec"><h2>Timeline</h2><span>Locked milestones open on their start day</span></div><div class="mlist">'+cards+'</div>'+
+'<div class="sec"><h2>Target categories</h2><span>What 90 days adds up to</span></div><div class="cards cats">'+C.map(function(c){return '<div class="card"><div class="top"><span>'+c[0]+'</span></div><h3>'+c[1]+'</h3><small>'+c[2]+'</small></div>'}).join("")+'</div>'+
+'<p class="note">Daily habits generate progress. Milestones are the achievements you earn from it.</p><div class="pn"><a class="b" href="#">← Home</a><a class="b f" href="#progress">Progress →</a></div>';
+app.querySelector(".mlist").onchange=function(e){var k=e.target.dataset.k;if(!k)return;var X=msGet();if(X[k])delete X[k];else X[k]=1;st("mm:ms",JSON.stringify(X));ms()}}
 function route(){var h=location.hash.slice(1);var q=dayNo();document.getElementById("dn").textContent=q<1?"Starts 19 Nov":"Day "+Math.min(q,90)+" / 90";window.scrollTo(0,0);h?page(h):home()}
 document.addEventListener("click",function(e){var a=e.target.closest("[data-go]");if(!a)return;e.preventDefault();if(location.hash&&location.hash!=="#"){location.hash="";setTimeout(function(){var l=document.getElementById("list");l&&l.scrollIntoView()},50)}else{var l=document.getElementById("list");l&&l.scrollIntoView()}});
 window.addEventListener("hashchange",route);route();
